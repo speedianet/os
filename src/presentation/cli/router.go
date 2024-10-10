@@ -43,23 +43,14 @@ func (router Router) accountRoutes() {
 	}
 	rootCmd.AddCommand(accountCmd)
 
-	accountController := cliController.NewAccountController()
+	accountController := cliController.NewAccountController(
+		router.persistentDbSvc, router.trailDbSvc,
+	)
 
 	accountCmd.AddCommand(accountController.Read())
 	accountCmd.AddCommand(accountController.Create())
 	accountCmd.AddCommand(accountController.Update())
 	accountCmd.AddCommand(accountController.Delete())
-}
-
-func (router Router) authenticationRoutes() {
-	var authCmd = &cobra.Command{
-		Use:   "auth",
-		Short: "Authentication&Authorization",
-	}
-	rootCmd.AddCommand(authCmd)
-
-	authenticationController := cliController.NewAuthController(router.trailDbSvc)
-	authCmd.AddCommand(authenticationController.Login())
 }
 
 func (router Router) cronRoutes() {
@@ -232,7 +223,6 @@ func (router Router) RegisterRoutes() {
 	rootCmd.AddCommand(versionCmd)
 
 	router.accountRoutes()
-	router.authenticationRoutes()
 	router.cronRoutes()
 	router.databaseRoutes()
 	router.marketplaceRoutes()
